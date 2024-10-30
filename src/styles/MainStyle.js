@@ -66,12 +66,11 @@ export const Input = styled.input`
   padding: 0.25rem 0.5rem;
   text-align: center;
 `;
-export const VoiceBtn = styled.button``;
 export const Answer = styled.h3`
   margin-bottom: 1rem;
 `;
 export const ResultText = styled.h3`
-  color: tomato;
+  color: ${({ $isCorrect }) => ($isCorrect ? "blue" : "red")};
 `;
 
 export const BtnBox = styled.div`

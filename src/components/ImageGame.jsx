@@ -10,32 +10,35 @@ import {
   InputBox,
   NextBtn,
   ResultText,
-  VoiceBtn,
 } from "../styles/MainStyle";
 
 const ImageGame = ({
+  counter,
   randomImages,
   currentIndex,
   transcript,
-  resultText,
   showAnswer,
   showBtn,
   handleNextImage,
   imgCount,
-  handleVoiceStart,
-  handleCheckAnswer,
   handleGameOver,
+  isCorrect,
 }) => {
   return (
     <GameBox>
       <Image src={randomImages[currentIndex].img} />
       <InputBox>
         <Input type="text" value={transcript.trim()} readOnly />
-        <VoiceBtn onClick={handleVoiceStart}>정답말하기</VoiceBtn>
-        <VoiceBtn onClick={handleCheckAnswer}>정답제출하기</VoiceBtn>
       </InputBox>
-      {showAnswer && <Answer>정답 : {randomImages[currentIndex].name}</Answer>}
-      <ResultText>{resultText}</ResultText>
+      <div>{counter}</div>
+      {showAnswer && (
+        <>
+          <Answer>정답 : {randomImages[currentIndex].name}</Answer>
+          <ResultText $isCorrect={isCorrect}>
+            {isCorrect ? "정답입니다!" : "틀렸습니다!"}
+          </ResultText>
+        </>
+      )}
 
       <BtnBox>
         {showBtn &&
