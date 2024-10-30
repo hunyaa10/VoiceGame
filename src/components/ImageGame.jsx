@@ -52,7 +52,7 @@ const ImageGame = ({
     <GameBox>
       <Image src={randomImages[currentIndex].img} />
       <InputBox>
-        <Input type="text" value={inputValue} readOnly />
+        <Input type="text" value={inputValue.trim()} readOnly />
       </InputBox>
       <Counter>{counter}</Counter>
       {showAnswer && (
