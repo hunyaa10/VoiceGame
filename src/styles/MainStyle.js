@@ -66,11 +66,17 @@ export const Input = styled.input`
   padding: 0.25rem 0.5rem;
   text-align: center;
 `;
+
+export const Counter = styled.div`
+  font-size: 1.2rem;
+  font-weight: 700;
+`;
+
 export const Answer = styled.h3`
   margin-bottom: 1rem;
 `;
 export const ResultText = styled.h3`
-  color: ${({ $isCorrect }) => ($isCorrect ? "blue" : "red")};
+  color: darkblue;
 `;
 
 export const BtnBox = styled.div`

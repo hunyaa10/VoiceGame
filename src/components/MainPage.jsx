@@ -22,10 +22,13 @@ const MainPage = () => {
   const [gameOver, setGameOver] = useState(false);
 
   const [counter, setCounter] = useState(3);
-  const [isCorrect, setIsCorrect] = useState(false);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
+  // ❓초기값을 false -> null
+  const [isCorrect, setIsCorrect] = useState(null);
+  // const [correctAnswers, setCorrectAnswers] = useState(0);
   // 타이머상태값 추가
   const [timer, setTimer] = useState(null);
+  // 정답갯수 state
+  const [countCorrect, setCountCorrect] = useState(0);
 
   const { transcript, resetTranscript } = useSpeechRecognition();
 
@@ -34,7 +37,7 @@ const MainPage = () => {
     setShowAnswer(false);
     setShowBtn(false);
     setCounter(3);
-    setIsCorrect(false);
+    setIsCorrect(null);
     startCountdown();
     resetTranscript();
     SpeechRecognition.startListening({ language: "ko-KR" });
@@ -53,15 +56,16 @@ const MainPage = () => {
       setCounter((prev) => {
         if (prev === 1) {
           clearInterval(countdownTimer);
+          handleCheckAnswer();
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
-    // 음성 인식 중지
+    // ❓3초후에도 음성인식이 계속되는 오류
+    // ✅3초 후 음성인식 중지코드 추가
     setTimeout(() => {
       SpeechRecognition.stopListening();
-      handleCheckAnswer();
     }, 3000);
 
     setTimer(countdownTimer);
@@ -75,8 +79,6 @@ const MainPage = () => {
     setCurrentIndex(0);
 
     initialState();
-
-    setCorrectAnswers(0);
   };
 
   // 음성인식
@@ -89,32 +91,44 @@ const MainPage = () => {
   // 정답확인
   const handleCheckAnswer = () => {
     const currentImage = randomImages[currentIndex];
-    setShowAnswer(true);
-    setShowBtn(true);
 
     if (transcript) {
+      // ❓정답을 맞췄는데도 타이머가종료되면 false처리가 됨
+      // ✅타이머종료로직 & 음성인식종료로직 추가
+      // 타이머종료로직 추가
+      clearInterval(timer);
+      SpeechRecognition.stopListening();
+      // 음성인식이 되는경우엔 정답오답 잘판별함
+      // 음성인식결과가 없으면 이전결과 그대로 나오는 오류 여전....
       if (transcript.trim() === currentImage.name.trim()) {
         setIsCorrect(true);
-        setCorrectAnswers((prev) => prev + 1);
-        // ❓정답을 맞췄는데도 타이머가종료되면 false처리가 되어
-        // 타이머종료로직 & 음성인식종료로직 추가
-        clearInterval(timer);
-        SpeechRecognition.stopListening();
-        // ❓콘솔출력이 한글자마다 계속됨
-        console.log(isCorrect);
       } else {
         setIsCorrect(false);
-        console.log(isCorrect);
+        clearInterval(timer);
+        SpeechRecognition.stopListening();
+        // console.log(isCorrect);
       }
+    } else if (!transcript) {
+      setIsCorrect(false);
     }
+
+    setShowAnswer(true);
+    setShowBtn(true);
   };
 
   // 다음게임 버튼클릭
   const handleNextImage = () => {
-    setIsCorrect(false);
-    // ❓isCorrect오류확인 >> 다음버튼을 누르면 이전결과가 그대로 전달됨
-    console.log(isCorrect);
     initialState();
+
+    // ❓다음버튼을 누르면 정답 혹은 오답의 결과가 이전결과대로 나옴
+    // 콘솔확인 >> 다음버튼을 누르면 이전결과가 그대로 전달됨
+    // console.log(isCorrect);
+    /*
+    isCorrect를 초기화했음에도 불구하고 콘솔창에 이전결과가 여전히 나타나는
+    이유는 isCorrect의 상태업데이트가 비동기적으로 진행되기 때문
+    ✅정답/오답관리를 ImageGame컴포넌트에서 새로운 state로 관리
+    */
+
     if (currentIndex < randomImages.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setImgCount(imgCount + 1);
@@ -129,7 +143,7 @@ const MainPage = () => {
   // 게임재시작
   const handleGameRestart = () => {
     setCurrentIndex(0);
-    setCorrectAnswers(0);
+    setCountCorrect(0);
     setImgCount(1);
     setGameOver(false);
     handleStartGame();
@@ -140,7 +154,7 @@ const MainPage = () => {
       <Title>인물맞히기 게임</Title>
       {gameOver ? (
         <Result
-          correctAnswers={correctAnswers}
+          countCorrect={countCorrect}
           handleGameRestart={handleGameRestart}
         />
       ) : isStart ? (
@@ -155,6 +169,7 @@ const MainPage = () => {
           imgCount={imgCount}
           handleGameOver={handleGameOver}
           isCorrect={isCorrect}
+          setCountCorrect={setCountCorrect}
         />
       ) : (
         <GameStart handleStartGame={handleStartGame} />
