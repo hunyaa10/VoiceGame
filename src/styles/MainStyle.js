@@ -35,7 +35,7 @@ export const StartBox = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 600;
   line-height: 1.8;
   @media (max-width: 1200px) {
@@ -52,6 +52,10 @@ export const StartBox = styled.div`
   @media (max-width: 430px) {
     height: 85vh;
   }
+`;
+export const Notice = styled.div`
+  color: tomato;
+  margin-bottom: 1rem;
 `;
 export const Description = styled.p``;
 export const StartBtn = styled.button`
