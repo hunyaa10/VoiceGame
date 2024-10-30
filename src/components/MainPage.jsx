@@ -11,6 +11,8 @@ import Result from "./Result";
 import { Title, Wrapper } from "../styles/MainStyle";
 
 const MainPage = () => {
+  const { transcript, resetTranscript } = useSpeechRecognition();
+
   const [randomImages, setRandomImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isStart, setIsStart] = useState(false);
@@ -22,15 +24,11 @@ const MainPage = () => {
   const [gameOver, setGameOver] = useState(false);
 
   const [counter, setCounter] = useState(3);
-  // ❓초기값을 false -> null
+
   const [isCorrect, setIsCorrect] = useState(null);
-  // const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [countCorrect, setCountCorrect] = useState(0);
   // 타이머상태값 추가
   const [timer, setTimer] = useState(null);
-  // 정답갯수 state
-  const [countCorrect, setCountCorrect] = useState(0);
-
-  const { transcript, resetTranscript } = useSpeechRecognition();
 
   // 상태값 초기화
   const initialState = () => {
@@ -66,6 +64,9 @@ const MainPage = () => {
     // ✅3초 후 음성인식 중지코드 추가
     setTimeout(() => {
       SpeechRecognition.stopListening();
+      // ❓잦은 버튼클릭으로 음성인식오류발생
+      // ✅3초 후 버튼생기게 변경
+      setShowBtn(true);
     }, 3000);
 
     setTimer(countdownTimer);
@@ -93,41 +94,35 @@ const MainPage = () => {
     const currentImage = randomImages[currentIndex];
 
     if (transcript) {
-      // ❓정답을 맞췄는데도 타이머가종료되면 false처리가 됨
-      // ✅타이머종료로직 & 음성인식종료로직 추가
-      // 타이머종료로직 추가
-      clearInterval(timer);
-      SpeechRecognition.stopListening();
-      // 음성인식이 되는경우엔 정답오답 잘판별함
-      // 음성인식결과가 없으면 이전결과 그대로 나오는 오류 여전....
       if (transcript.trim() === currentImage.name.trim()) {
         setIsCorrect(true);
-      } else {
-        setIsCorrect(false);
+        // ❓정답을 맞췄는데도 타이머가종료되면 false처리가 됨
+        // ✅타이머종료로직 & 음성인식종료로직 추가
         clearInterval(timer);
         SpeechRecognition.stopListening();
-        // console.log(isCorrect);
+      } else {
+        setIsCorrect(false);
+        // ✅타이머종료로직 & 음성인식종료로직 추가
+        clearInterval(timer);
+        SpeechRecognition.stopListening();
       }
     } else if (!transcript) {
+      // ✅음성인식이 없는 경우엔 무조건 오답처리
       setIsCorrect(false);
     }
 
     setShowAnswer(true);
-    setShowBtn(true);
   };
 
   // 다음게임 버튼클릭
   const handleNextImage = () => {
+    setIsCorrect(null);
     initialState();
-
     // ❓다음버튼을 누르면 정답 혹은 오답의 결과가 이전결과대로 나옴
-    // 콘솔확인 >> 다음버튼을 누르면 이전결과가 그대로 전달됨
     // console.log(isCorrect);
-    /*
-    isCorrect를 초기화했음에도 불구하고 콘솔창에 이전결과가 여전히 나타나는
-    이유는 isCorrect의 상태업데이트가 비동기적으로 진행되기 때문
-    ✅정답/오답관리를 ImageGame컴포넌트에서 새로운 state로 관리
-    */
+    // 콘솔확인 >> 다음버튼을 누르면 이전결과가 그대로 전달됨
+    // ✅isCorrect 초기값을 null로 변경
+    // ✅정답/오답관리를 ImageGame컴포넌트에서 새로운 state로 추가관리
 
     if (currentIndex < randomImages.length - 1) {
       setCurrentIndex(currentIndex + 1);

@@ -12,7 +12,6 @@ import {
   NextBtn,
   ResultText,
 } from "../styles/MainStyle";
-import Result from "./Result";
 
 const ImageGame = ({
   counter,
@@ -25,12 +24,11 @@ const ImageGame = ({
   imgCount,
   handleGameOver,
   isCorrect,
+  setCountCorrect,
 }) => {
   // input value state 추가
   const [inputValue, setInputValue] = useState(transcript);
   const [resultText, setResultText] = useState("");
-  // 정답갯수 start 추가
-  const [countCorrect, setCountCorrect] = useState(0);
 
   // 정답판별
   const handleResultText = () => {
@@ -43,16 +41,13 @@ const ImageGame = ({
   };
 
   useEffect(() => {
-    // inputValue를 음성 인식 값으로 업데이트
     setInputValue(transcript.trim());
   }, [transcript]);
-  //
+
   useEffect(() => {
     handleResultText();
   }, [inputValue]);
-  // 이전결과가 오답 > 다음결과가 정답 > 타이머 스톱 > '정답'
-  // 이전결과가 정답 > 다음결과 오답 > 타이머 계속 > '정답'
-  // 타이머문제?
+
   return (
     <GameBox>
       <Image src={randomImages[currentIndex].img} />
@@ -63,7 +58,6 @@ const ImageGame = ({
       {showAnswer && (
         <>
           <Answer>정답 : {randomImages[currentIndex].name}</Answer>
-          {/*  */}
           {isCorrect !== null && <ResultText>{resultText}</ResultText>}
         </>
       )}

@@ -51,7 +51,7 @@ export const GameBox = styled.div`
   position: relative;
 `;
 export const Image = styled.img`
-  width: 30vw;
+  /* width: 30vw; */
   height: 45vh;
 `;
 export const InputBox = styled.div`
