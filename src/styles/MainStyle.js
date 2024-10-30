@@ -7,14 +7,27 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  @media (max-width: 991px) {
+    gap: 1rem;
+  }
+  @media (max-width: 575px) {
+    padding: 1rem;
+  }
 `;
 export const Title = styled.h1`
-  text-align: center;
+  @media (max-width: 991px) {
+    font-size: 1.5rem;
+  }
+  @media (max-width: 575px) {
+    font-size: 1.2rem;
+  }
 `;
 export const StartBox = styled.div`
-  margin: auto;
   width: 60vw;
   height: 75vh;
+  padding: 2rem;
   background-color: #fff;
   border-radius: 1rem;
   display: flex;
@@ -25,6 +38,20 @@ export const StartBox = styled.div`
   font-size: 1.5rem;
   font-weight: 600;
   line-height: 1.8;
+  @media (max-width: 1200px) {
+    width: 80vw;
+  }
+  @media (max-width: 991px) {
+    width: 90vw;
+    font-size: 1.2rem;
+  }
+  @media (max-width: 575px) {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+  @media (max-width: 430px) {
+    height: 85vh;
+  }
 `;
 export const Description = styled.p``;
 export const StartBtn = styled.button`
@@ -39,7 +66,6 @@ export const StartBtn = styled.button`
 `;
 
 export const GameBox = styled.div`
-  margin: auto;
   width: 60vw;
   height: 75vh;
   background-color: #fff;
@@ -49,9 +75,21 @@ export const GameBox = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
+  @media (max-width: 1200px) {
+    width: 80vw;
+  }
+  @media (max-width: 991px) {
+    width: 90vw;
+  }
+  @media (max-width: 575px) {
+    padding: 1rem;
+  }
+  @media (max-width: 430px) {
+    height: 85vh;
+    padding-top: 2rem;
+  }
 `;
 export const Image = styled.img`
-  /* width: 30vw; */
   height: 45vh;
 `;
 export const InputBox = styled.div`
@@ -74,9 +112,15 @@ export const Counter = styled.div`
 
 export const Answer = styled.h3`
   margin-bottom: 1rem;
+  @media (max-width: 430px) {
+    font-size: 1rem;
+  }
 `;
 export const ResultText = styled.h3`
   color: darkblue;
+  @media (max-width: 430px) {
+    font-size: 1rem;
+  }
 `;
 
 export const BtnBox = styled.div`
@@ -88,6 +132,10 @@ export const BtnBox = styled.div`
   position: absolute;
   right: 1rem;
   bottom: 1.5rem;
+  @media (max-width: 430px) {
+    position: static;
+    margin-top: 2rem;
+  }
 `;
 export const ImgCount = styled.p``;
 export const NextBtn = styled.button``;
