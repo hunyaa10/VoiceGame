@@ -11,7 +11,10 @@ import Result from "./Result";
 import { Title, Wrapper } from "../styles/MainStyle";
 
 const MainPage = () => {
-  const { transcript, resetTranscript } = useSpeechRecognition();
+  const { transcript, resetTranscript } = useSpeechRecognition({
+    continuous: true,
+    language: "ko-KR",
+  });
 
   const [randomImages, setRandomImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -27,7 +30,7 @@ const MainPage = () => {
 
   const [isCorrect, setIsCorrect] = useState(null);
   const [countCorrect, setCountCorrect] = useState(0);
-  // 타이머상태값 추가
+
   const [timer, setTimer] = useState(null);
 
   // 상태값 초기화
@@ -38,7 +41,7 @@ const MainPage = () => {
     setIsCorrect(null);
     startCountdown();
     resetTranscript();
-    SpeechRecognition.startListening({ language: "ko-KR" });
+    SpeechRecognition.startListening();
   };
 
   // 랜덤이미지 추출
@@ -60,12 +63,9 @@ const MainPage = () => {
         return prev - 1;
       });
     }, 1000);
-    // ❓3초후에도 음성인식이 계속되는 오류
-    // ✅3초 후 음성인식 중지코드 추가
+
     setTimeout(() => {
       SpeechRecognition.stopListening();
-      // ❓잦은 버튼클릭으로 음성인식오류발생
-      // ✅3초 후 버튼생기게 변경
       setShowBtn(true);
     }, 3000);
 
@@ -92,22 +92,20 @@ const MainPage = () => {
   // 정답확인
   const handleCheckAnswer = () => {
     const currentImage = randomImages[currentIndex];
+    const cleanedTranscript = transcript.trim();
+    const correctName = currentImage.name.trim();
 
     if (transcript) {
-      if (transcript.trim() === currentImage.name.trim()) {
+      if (cleanedTranscript === correctName) {
         setIsCorrect(true);
-        // ❓정답을 맞췄는데도 타이머가종료되면 false처리가 됨
-        // ✅타이머종료로직 & 음성인식종료로직 추가
         clearInterval(timer);
         SpeechRecognition.stopListening();
       } else {
         setIsCorrect(false);
-        // ✅타이머종료로직 & 음성인식종료로직 추가
         clearInterval(timer);
         SpeechRecognition.stopListening();
       }
     } else if (!transcript) {
-      // ✅음성인식이 없는 경우엔 무조건 오답처리
       setIsCorrect(false);
     }
 
@@ -118,11 +116,6 @@ const MainPage = () => {
   const handleNextImage = () => {
     setIsCorrect(null);
     initialState();
-    // ❓다음버튼을 누르면 정답 혹은 오답의 결과가 이전결과대로 나옴
-    // console.log(isCorrect);
-    // 콘솔확인 >> 다음버튼을 누르면 이전결과가 그대로 전달됨
-    // ✅isCorrect 초기값을 null로 변경
-    // ✅정답/오답관리를 ImageGame컴포넌트에서 새로운 state로 추가관리
 
     if (currentIndex < randomImages.length - 1) {
       setCurrentIndex(currentIndex + 1);

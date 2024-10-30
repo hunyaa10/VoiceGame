@@ -26,7 +26,6 @@ const ImageGame = ({
   isCorrect,
   setCountCorrect,
 }) => {
-  // input value state 추가
   const [inputValue, setInputValue] = useState(transcript);
   const [resultText, setResultText] = useState("");
 
