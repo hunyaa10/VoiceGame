@@ -33,7 +33,6 @@ const MainPage = () => {
 
   const [timer, setTimer] = useState(null);
 
-  // 상태값 초기화
   const initialState = () => {
     setShowAnswer(false);
     setShowBtn(false);
@@ -44,13 +43,11 @@ const MainPage = () => {
     SpeechRecognition.startListening();
   };
 
-  // 랜덤이미지 추출
   const getRandomImages = (num) => {
     const mixedImages = [...imagesData].sort(() => 0.5 - Math.random());
     return mixedImages.slice(0, num);
   };
 
-  // 카운트다운
   const startCountdown = () => {
     setCounter(3);
     const countdownTimer = setInterval(() => {
@@ -72,7 +69,6 @@ const MainPage = () => {
     setTimer(countdownTimer);
   };
 
-  // 게임시작 버튼클릭
   const handleStartGame = () => {
     setIsStart(true);
     const images = getRandomImages(5);
@@ -82,18 +78,16 @@ const MainPage = () => {
     initialState();
   };
 
-  // 음성인식
   useEffect(() => {
     if (transcript) {
       handleCheckAnswer();
     }
   }, [transcript]);
 
-  // 정답확인
   const handleCheckAnswer = () => {
     const currentImage = randomImages[currentIndex];
     const cleanedTranscript = transcript.trim();
-    const correctName = currentImage.name.trim();
+    const correctName = currentImage?.name.trim();
 
     if (transcript) {
       if (cleanedTranscript === correctName) {
@@ -112,7 +106,6 @@ const MainPage = () => {
     setShowAnswer(true);
   };
 
-  // 다음게임 버튼클릭
   const handleNextImage = () => {
     setIsCorrect(null);
     initialState();
@@ -123,12 +116,10 @@ const MainPage = () => {
     }
   };
 
-  // 최종결과확인
   const handleGameOver = () => {
     setGameOver(true);
   };
 
-  // 게임재시작
   const handleGameRestart = () => {
     setCurrentIndex(0);
     setCountCorrect(0);
